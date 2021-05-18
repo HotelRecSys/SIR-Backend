@@ -70,7 +70,7 @@ def register():
         return {'error':'Please try again!'}
 
 
-@app.route('/logout', methods=['GET'])
+@app.route('/logout', methods=['GET', 'POST'])
 def logout():
    conn = dpapi.connect(url)
    cursor = conn.cursor()
