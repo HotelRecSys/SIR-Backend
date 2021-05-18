@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
+    <data-source source="LOCAL" name="sir" uuid="517272ae-30c4-4ff3-be2a-8d1c9577226a">
+      <driver-ref>postgresql</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>org.postgresql.Driver</jdbc-driver>
+      <jdbc-url>jdbc:postgresql://suleiman.db.elephantsql.com:5432/jvncgqps</jdbc-url>
+    </data-source>
+  </component>
+</project>
