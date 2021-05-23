@@ -38,7 +38,6 @@ def login():
             response = jsonify(user)
             return response
         else:
-            print("dsdskjdhjdshjs")
             return {'error':'Invalid email or password!'}
     else :
         conn.close()
@@ -73,7 +72,6 @@ def register():
 @app.route('/logout', methods=['GET', 'POST'])
 def logout():
    conn = dpapi.connect(url)
-   cursor = conn.cursor()
 
    if 'id' in session:
         session.pop('id')
@@ -82,6 +80,33 @@ def logout():
 
    conn.close()
    return {'success':'Succesfully log out!'}
+
+
+@app.route('/country-filter', methods=['GET', 'POST'])
+def countryFilter():
+    conn = dpapi.connect(url)
+    cursor = conn.cursor()
+
+    data = json.loads(request.data)
+    country = data['country']
+    page = data['page']
+    otelList = []
+    print(page)
+    if country:
+        cursor.execute('SELECT * FROM otel WHERE country=%s ORDER BY item_id DESC LIMIT %s OFFSET %s', (country, 10, 10*page,))
+        otels = cursor.fetchall()
+
+        for otel in otels:
+            array = {"item_id": otel[0], "name": otel[1], "score": otel[2], "city": otel[3], "country": otel[4], "address": otel[5], "img": otel[6], "properties": otel[7]}
+            otelList.append(array)
+
+
+        response = jsonify(otelList)
+        conn.close()
+        return response
+    else:
+        conn.close()
+        return {'error': 'No country!'}
 
 
 if __name__ == "__main__":
