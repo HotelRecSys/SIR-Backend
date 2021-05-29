@@ -1,20 +1,20 @@
-import psycopg2
+
 import json
-from flask import Flask, jsonify, request, render_template,redirect, url_for, send_from_directory, session
-from werkzeug.utils import secure_filename
+from flask import Flask, jsonify, request, session
 import hashlib
-from flask_cors import CORS,cross_origin
-import os
+from flask_cors import CORS
 import psycopg2 as dpapi
 
-url = "dbname='jvncgqps' user='jvncgqps' host='suleiman.db.elephantsql.com' password='X3rc42rz2LZi0_lZK4B9i-m_OrumPo-d' "
+url = "dbname='sir' user='postgres' host='localhost' port='5432' password='54321' "
 app = Flask(__name__)
 CORS(app)
 app.secret_key = "sir"
 
+
 @app.route('/')
 def index():
-    return "Hello, world!"
+    return "Hello,Rümü!"
+
 
 @app.route('/login', methods=['POST', 'GET'])
 def login():
@@ -38,10 +38,11 @@ def login():
             response = jsonify(user)
             return response
         else:
-            return {'error':'Invalid email or password!'}
+            return jsonify(message="User with that email or password do not exist"), 404
     else :
         conn.close()
-        return {'error':'Please try again!'}
+        return jsonify(message='Please try again!'), 404
+
 
 @app.route('/register', methods=['POST'])
 def register():
@@ -55,7 +56,7 @@ def register():
     password = data['password']
     country = data['country']
     image = data['image']
-    print(data)
+
     if name and email and password and country:
         #if request.form.get("forgotPassword"):
         #    return render_template("index.html")
@@ -110,4 +111,4 @@ def countryFilter():
 
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=5000)
+    app.run(debug=True)
