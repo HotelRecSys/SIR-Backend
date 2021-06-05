@@ -1,4 +1,3 @@
-
 import json
 from flask import Flask, jsonify, request, session
 import hashlib
@@ -9,12 +8,6 @@ url = "dbname='sir' user='postgres' host='localhost' port='5432' password='54321
 app = Flask(__name__)
 CORS(app)
 app.secret_key = "sir"
-
-
-@app.route('/')
-def index():
-    return "Hello,Rümü!"
-
 
 @app.route('/login', methods=['POST', 'GET'])
 def login():
@@ -109,6 +102,46 @@ def countryFilter():
         conn.close()
         return {'error': 'No country!'}
 
+@app.route('/top-ten', methods=['GET', 'POST'])
+def topHotels():
+    conn = dpapi.connect(url)
+    cursor = conn.cursor()
+
+    cursor.execute('SELECT * FROM otel WHERE score = (SELECT MAX(score) FROM otel) ORDER BY item_id ASC LIMIT 10')
+    topOtels = cursor.fetchall()
+    otelList = []
+    for otel in topOtels:
+        array = {"item_id": otel[0], "name": otel[1], "score": otel[2], "city": otel[3], "country": otel[4], "address": otel[5], "img": otel[6], "properties": otel[7]}
+        otelList.append(array)
+
+    response = jsonify(otelList)
+    conn.close()
+    return response
+
+@app.route('/search', methods=['GET', 'POST'])
+def search():
+    conn = dpapi.connect(url)
+    cursor = conn.cursor()
+
+    data = json.loads(request.data)
+    print(data)
+    name = data['otelName']
+
+    if name:
+        cursor.execute('SELECT * FROM otel WHERE name LIKE %s', ("%" + name + "%",))
+        searchedOtel = cursor.fetchall()
+        otelList = []
+        for otel in searchedOtel:
+            array = {"item_id": otel[0], "name": otel[1], "score": otel[2],  "city": otel[3],  "county": otel[4],  "address": otel[5],  "img": otel[6], "properties": otel[7]}
+            otelList.append(array)
+
+        response = jsonify(otelList)
+        conn.close()
+        return response
+
+@app.route('/')
+def index():
+    return  "12345678"
 
 if __name__ == "__main__":
     app.run(debug=True)
